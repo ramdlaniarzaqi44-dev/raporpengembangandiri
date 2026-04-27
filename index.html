@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen Psikologi - SMAS AL-MULTAZAM</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .hidden-view { display: none !important; }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Custom Styles for Print */
+        @media print {
+            @page { 
+                margin: 10mm; /* Margin Narrow (1cm) */
+                size: A4 portrait; 
+            }
+            body { 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact; 
+                background-color: white; 
+            }
+            .no-print, #view-welcome, #view-test, #view-dashboard { display: none !important; }
+            .print-block { display: block !important; }
+            
+            .print-container { 
+                width: 100% !important; 
+                max-width: 100% !important;
+                padding: 0 !important; 
+                margin: 0 !important; 
+                font-family: 'Noto Serif', serif; 
+                color: #1e293b; 
+                font-size: 10pt; 
+                line-height: 1.3;
+            }
+            
+            /* KOP Style Modern Minimalis */
+            .header-kop { 
+                border-bottom: 2px solid #15803d !important; 
+                padding-bottom: 0.5rem; 
+                margin-bottom: 0.75rem; 
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+            .header-yayasan { font-size: 8pt; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 2px; text-transform: uppercase; color: #166534; }
+            .sekolah-nama { color: #15803d !important; font-size: 14pt !important; font-weight: 800 !important; line-height: 1.1; margin-bottom: 2px; text-transform: uppercase; }
+            .header-info { font-size: 7.5pt !important; color: #475569 !important; }
+
+            /* JUDUL & DATA */
+            .doc-title-box {
+                background-color: #f0fdf4;
+                border-left: 4px solid #15803d;
+                padding: 0.5rem;
+                margin-bottom: 0.75rem;
+            }
+            .doc-title { font-size: 11pt !important; margin: 0; font-weight: 700; color: #14532d; text-transform: uppercase; }
+            .doc-subtitle { font-size: 9pt !important; margin: 0; color: #166534; }
+            
+            .student-data { 
+                font-size: 9pt !important; 
+                margin-bottom: 0.75rem !important; 
+                padding: 0.5rem;
+                background: #f8fafc;
+                border-radius: 4px;
+                border: 1px solid #e2e8f0;
+            }
+
+            /* CHART STYLES (UNSUR GAMBAR AVG) */
+            .chart-row { display: flex; align-items: center; margin-bottom: 3px; }
+            .chart-icon { width: 16px; text-align: center; font-size: 9pt; margin-right: 4px; }
+            .chart-label { width: 85px; font-size: 8pt; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .chart-track { flex: 1; height: 10px; background-color: #e2e8f0; border-radius: 6px; overflow: hidden; margin: 0 6px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+            .chart-fill { height: 100%; border-radius: 6px; }
+            .chart-value { width: 24px; text-align: right; font-size: 7.5pt; font-weight: 700; color: #64748b; font-family: monospace; }
+
+            /* Color Classes for Charts */
+            .fill-blue { background: linear-gradient(90deg, #3b82f6, #2563eb) !important; }
+            .fill-teal { background: linear-gradient(90deg, #14b8a6, #0d9488) !important; }
+            .fill-indigo { background: linear-gradient(90deg, #6366f1, #4f46e5) !important; }
+            .fill-orange { background: linear-gradient(90deg, #f97316, #ea580c) !important; }
+
+            /* CONTENT BOXES */
+            .section-title { 
+                font-size: 9.5pt !important; 
+                margin-bottom: 0.4rem !important; 
+                color: #0f172a !important; 
+                font-weight: 700; 
+                text-transform: uppercase; 
+                display: flex;
+                align-items: center;
+                background: #f1f5f9;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+            
+            .print-box { 
+                border: 1px solid #e2e8f0 !important; 
+                background-color: white !important; 
+                padding: 0.5rem !important; 
+                border-radius: 0.5rem !important; 
+                font-size: 9pt !important;
+                margin-bottom: 0.5rem !important;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            }
+            
+            .suggestion-box { 
+                background-color: #ecfdf5 !important; 
+                border: 1px solid #6ee7b7 !important; 
+                color: #064e3b !important; 
+                padding: 0.75rem !important;
+                font-size: 9pt !important;
+                border-radius: 0.5rem;
+                position: relative;
+            }
+
+            .print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.5rem; }
+            .print-full { grid-column: span 2; }
+            
+            .text-justify { text-align: justify; }
+            
+            /* Footer Adjustment */
+            .footer-sig { margin-top: 0.5rem; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen overflow-x-hidden">
+
+    <!-- ================= VIEW 1: LOGIN ================= -->
+    <div id="view-welcome" class="min-h-screen flex items-center justify-center p-4 fade-in bg-slate-100 app-view">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col md:flex-row min-h-[550px]">
+            <!-- Branding -->
+            <div class="w-full md:w-1/2 bg-teal-600 p-8 md:p-12 flex flex-col items-center justify-center text-white relative">
+                <div class="absolute top-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="relative z-10 text-center">
+                    <div class="bg-white p-4 rounded-full inline-block mb-6 shadow-xl">
+                        <img src="https://i.ibb.co.com/PG59mBdt/Logo-SMA-Baru.png" alt="Logo" class="h-28 w-auto">
+                    </div>
+                    <h1 class="text-3xl font-extrabold mb-3 tracking-wide">SMAS AL-MULTAZAM</h1>
+                    <p class="text-teal-50 font-medium text-lg">Asesmen Psikologi & Potensi Siswa</p>
+                </div>
+            </div>
+            <!-- Form -->
+            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white">
+                <div class="max-w-md mx-auto w-full">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center"><i data-lucide="log-in" class="mr-2 text-teal-600"></i> Identitas Siswa</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                            <input type="text" id="input-nama" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-teal-500" placeholder="Nama Lengkap">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Kelamin</label>
+                            <select id="input-gender" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-teal-500">
+                                <option value="" disabled selected>Pilih Putra / Putri</option>
+                                <option value="Putra">Putra</option>
+                                <option value="Putri">Putri</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
+                                <input type="text" id="input-kelas" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-center" placeholder="X-B">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">NIS</label>
+                                <input type="text" id="input-nis" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-center" placeholder="1234">
+                            </div>
+                        </div>
+                        <button onclick="startTest()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 rounded-xl mt-4 shadow-lg flex items-center justify-center transition hover:scale-105">
+                            Mulai Asesmen <i data-lucide="arrow-right" class="ml-2" width="20"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fixed bottom-4 text-slate-400 text-xs w-full text-center pointer-events-none">&copy; 2025 SMAS Al-Multazam Counseling Dept.</div>
+    </div>
+
+    <!-- ================= VIEW 2: ASESMEN ================= -->
+    <div id="view-test" class="min-h-screen flex flex-col items-center justify-center p-4 hidden-view app-view bg-slate-50">
+        <div class="fixed top-0 left-0 w-full bg-white shadow-sm z-50">
+            <div class="max-w-4xl mx-auto px-4 py-3">
+                <div class="flex justify-between text-sm text-slate-600 mb-2 items-center">
+                    <span class="font-bold text-teal-700 flex items-center"><i data-lucide="clipboard-list" width="18" class="mr-2"></i> <span id="test-section-title">Bagian 1</span></span>
+                    <span id="test-progress-text" class="bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-600">1 / 60</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden"><div id="test-progress-bar" class="bg-teal-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div></div>
+            </div>
+        </div>
+        <div class="w-full max-w-3xl mt-16 fade-in">
+            <div class="bg-white p-8 md:p-12 rounded-3xl shadow-xl border-t-8 border-teal-600 relative overflow-hidden min-h-[400px] flex flex-col justify-center">
+                <div class="relative z-10 w-full">
+                    <h2 id="question-text" class="text-xl md:text-3xl font-medium text-slate-800 text-center mb-12 leading-snug font-serif">Loading...</h2>
+                    <div class="grid grid-cols-5 gap-3 md:gap-4">
+                        <button onclick="handleAnswer(1)" class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-red-100 bg-red-50/50 hover:bg-red-500 hover:text-white text-red-600 transition h-24 md:h-32"><span class="text-3xl font-bold">1</span><span class="text-xs font-bold uppercase mt-1">Sangat Tidak</span></button>
+                        <button onclick="handleAnswer(2)" class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-orange-100 bg-orange-50/50 hover:bg-orange-500 hover:text-white text-orange-600 transition h-24 md:h-32"><span class="text-3xl font-bold">2</span><span class="text-xs font-bold uppercase mt-1">Tidak Sesuai</span></button>
+                        <button onclick="handleAnswer(3)" class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-100 bg-slate-50/50 hover:bg-slate-500 hover:text-white text-slate-600 transition h-24 md:h-32"><span class="text-3xl font-bold">3</span><span class="text-xs font-bold uppercase mt-1">Ragu-ragu</span></button>
+                        <button onclick="handleAnswer(4)" class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-lime-100 bg-lime-50/50 hover:bg-lime-500 hover:text-white text-lime-600 transition h-24 md:h-32"><span class="text-3xl font-bold">4</span><span class="text-xs font-bold uppercase mt-1">Sesuai</span></button>
+                        <button onclick="handleAnswer(5)" class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-teal-100 bg-teal-50/50 hover:bg-teal-600 hover:text-white text-teal-700 transition h-24 md:h-32"><span class="text-3xl font-bold">5</span><span class="text-xs font-bold uppercase mt-1">Sangat Sesuai</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= VIEW 3: DASHBOARD ================= -->
+    <div id="view-dashboard" class="min-h-screen bg-slate-100 p-4 md:p-8 overflow-y-auto no-print hidden-view app-view fade-in">
+        <div class="max-w-5xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 flex flex-col md:flex-row justify-between items-center border-l-4 border-teal-600 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800">Hasil Asesmen Selesai</h1>
+                    <p class="text-slate-600">Siswa: <span id="dash-nama" class="font-bold text-teal-700"></span> | Kelas: <span id="dash-kelas" class="font-bold text-teal-700"></span></p>
+                    <p class="text-sm text-slate-500 mt-1" id="dash-tanggal"></p>
+                </div>
+                <button onclick="window.print()" class="bg-teal-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-teal-700 shadow-md font-bold">
+                    <i data-lucide="printer" width="18"></i> CETAK LAPORAN
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-blue-500">
+                    <h3 class="text-lg font-bold text-slate-700 mb-2">Karakter</h3>
+                    <p id="dash-trait-title" class="text-xl font-bold text-blue-600"></p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-teal-500">
+                    <h3 class="text-lg font-bold text-slate-700 mb-2">Gaya Belajar</h3>
+                    <p id="dash-vak-title" class="text-xl font-bold text-teal-600"></p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-indigo-500">
+                    <h3 class="text-lg font-bold text-slate-700 mb-2">Minat Karir</h3>
+                    <p id="dash-code-title" class="text-xl font-bold text-indigo-600 font-mono"></p>
+                </div>
+            </div>
+
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-8 text-center">
+                 <div class="mx-auto bg-white p-4 rounded-full w-20 h-20 flex items-center justify-center mb-4 shadow-sm"><i data-lucide="check-circle" class="text-emerald-500" width="40" height="40"></i></div>
+                 <h2 class="text-2xl font-bold text-emerald-800 mb-2">Terima Kasih!</h2>
+                 <p class="text-emerald-700 max-w-lg mx-auto">Data Anda telah berhasil diproses. Silakan klik tombol "Cetak Laporan" di atas untuk mengunduh atau mencetak hasil analisis psikologi Anda dalam format resmi 1 halaman.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= VIEW 4: PRINT (LAPORAN 1 HALAMAN MODERN) ================= -->
+    <div id="view-print" class="hidden print-block bg-white text-black p-0 mx-auto print-container font-serif">
+        <!-- KOP -->
+        <div class="header-kop">
+            <img src="https://i.ibb.co.com/PG59mBdt/Logo-SMA-Baru.png" alt="Logo" class="h-20 w-auto">
+            <div class="flex-1">
+                <h3 class="header-yayasan">The Foundation of Islamic Education of Al-Multazam</h3>
+                <h1 class="sekolah-nama">Private Senior High School<br>of Al-Multazam</h1>
+                <p class="header-info font-bold">STATUS TERAKREDITASI "A" NSS: 302050318310 NPSN: 20555563</p>
+                <p class="header-info">Jl. Raya Kepuhanyar No. 24 Mojoanyar Mojokerto - www.smasalmultazam-mjk.sch.id</p>
+            </div>
+        </div>
+
+        <!-- JUDUL & DATA -->
+        <div class="doc-title-box">
+            <h2 class="doc-title">LAPORAN PENGEMBANGAN DIRI SISWA</h2>
+            <h3 class="doc-subtitle">TAHUN PELAJARAN 2024/2025</h3>
+        </div>
+        <div class="grid grid-cols-[auto_1fr_auto_1fr] gap-x-3 gap-y-1 student-data font-medium">
+            <span class="text-slate-600">Nama Sekolah</span> <span>: SMAS AL-MULTAZAM</span>
+            <span class="text-slate-600 pl-4">Kelas</span> <span>: <span id="print-kelas"></span></span>
+            <span class="text-slate-600">Nama Lengkap</span> <span class="uppercase font-bold text-slate-900">: <span id="print-nama"></span></span>
+            <span class="text-slate-600 pl-4">Nomor Induk</span> <span>: <span id="print-nis"></span></span>
+            <span class="text-slate-600">Jenis Kelamin</span> <span>: <span id="print-gender"></span></span>
+            <span></span><span></span>
+        </div>
+
+        <!-- CONTENT GRID -->
+        <div class="print-grid">
+            <!-- A. KARAKTER -->
+            <div class="print-box">
+                <h4 class="section-title text-blue-800"><i data-lucide="brain" width="14" class="mr-1.5"></i> A. Profil Kepribadian (AVG)</h4>
+                <div class="mb-3" id="chart-character">
+                    <!-- AVG Bars Injected Here -->
+                </div>
+                <div class="text-justify border-t border-slate-100 pt-2">
+                    <p class="font-bold text-slate-900 text-[9pt] mb-1">Dominan: <span id="print-trait-title" class="text-blue-700"></span></p>
+                    <p id="print-character-desc" class="text-slate-700 leading-snug"></p>
+                </div>
+            </div>
+
+            <!-- B. GAYA BELAJAR -->
+            <div class="print-box">
+                <h4 class="section-title text-teal-800"><i data-lucide="book-open" width="14" class="mr-1.5"></i> B. Gaya Belajar (VAK)</h4>
+                <div class="mb-3" id="chart-vak">
+                    <!-- AVG Bars Injected Here -->
+                </div>
+                <div class="text-justify border-t border-slate-100 pt-2">
+                    <p class="font-bold text-slate-900 text-[9pt] mb-1">Tipe Dominan: <span id="print-vak-type" class="uppercase text-teal-700"></span></p>
+                    <p id="print-vak-desc" class="text-slate-700 leading-snug mb-2"></p>
+                    <p class="text-[8.5pt] bg-teal-50 p-1.5 rounded border border-teal-100 text-teal-900">
+                        <b>Saran Strategi:</b> <span id="print-extra"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- C. KARIR -->
+        <div class="print-box print-full">
+            <h4 class="section-title text-indigo-800"><i data-lucide="compass" width="14" class="mr-1.5"></i> C. Pemetaan Minat Karir (RIASEC)</h4>
+            <div class="flex gap-4">
+                <div class="w-[40%] border-r border-slate-200 pr-3" id="chart-riasec">
+                    <!-- AVG Bars Injected Here -->
+                </div>
+                <div class="w-[60%] pl-1 flex flex-col justify-center">
+                    <div class="flex items-center mb-3">
+                        <span class="text-[8pt] font-bold text-slate-500 mr-2">KODE HOLLAND:</span>
+                        <span id="print-holland" class="bg-indigo-600 text-white px-2 py-0.5 rounded text-[10pt] font-bold tracking-widest"></span>
+                    </div>
+                    <div class="mb-2">
+                        <span class="font-bold text-indigo-800 block text-[9pt] mb-0.5"><i data-lucide="graduation-cap" width="12" class="inline mr-1"></i> Rekomendasi Jurusan:</span>
+                        <span id="print-majors" class="text-slate-700 leading-snug text-[9pt]"></span>
+                    </div>
+                    <div>
+                        <span class="font-bold text-indigo-800 block text-[9pt] mb-0.5"><i data-lucide="briefcase" width="12" class="inline mr-1"></i> Prospek Profesi:</span>
+                        <span id="print-jobs" class="text-slate-700 leading-snug text-[9pt]"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- D. SARAN -->
+        <div class="print-full suggestion-box">
+            <h4 class="section-title !bg-transparent !p-0 !mb-1 text-emerald-800 !border-none"><i data-lucide="lightbulb" width="14" class="mr-1.5"></i> D. Saran Pengembangan Diri</h4>
+            <p id="print-suggestion" class="text-justify leading-relaxed"></p>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="flex justify-end footer-sig break-inside-avoid">
+            <div class="text-center min-w-[200px]">
+                <p style="margin-bottom: 2px;">Mojokerto, <span id="print-date"></span></p>
+                <p style="margin-bottom: 3.5rem;">Guru Bimbingan Konseling,</p>
+                <p id="print-guru-nama" class="font-bold underline underline-offset-2 text-[10pt]"></p>
+                <p class="text-[9pt]">NIP. -</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= LOGIC ================= -->
+    <script>
+        // Data Pertanyaan
+        const questions = [
+            { id: 1, text: "Saya memiliki imajinasi yang sangat aktif.", dimension: 'openness' },
+            { id: 2, text: "Saya cepat bosan dengan cara belajar yang itu-itu saja.", dimension: 'openness' },
+            { id: 3, text: "Saya suka mencari tahu arti mendalam dari sebuah puisi atau lukisan.", dimension: 'openness' },
+            { id: 4, text: "Saya sulit memahami ide-ide yang terlalu abstrak.", dimension: 'openness', reverse: true },
+            { id: 5, text: "Saya selalu mengerjakan tugas sekolah jauh sebelum tenggat waktu.", dimension: 'conscientiousness' },
+            { id: 6, text: "Saya suka menaruh barang-barang kembali ke tempat asalnya dengan rapi.", dimension: 'conscientiousness' },
+            { id: 7, text: "Saya bekerja keras untuk mencapai target nilai yang saya inginkan.", dimension: 'conscientiousness' },
+            { id: 8, text: "Kadang-kadang saya lupa mengerjakan tugas atau janji.", dimension: 'conscientiousness', reverse: true },
+            { id: 9, text: "Saya merasa berenergi setelah berinteraksi dengan banyak teman.", dimension: 'extraversion' },
+            { id: 10, text: "Saya tidak ragu untuk memulai percakapan dengan orang baru.", dimension: 'extraversion' },
+            { id: 11, text: "Saya suka menjadi pusat perhatian di kelas.", dimension: 'extraversion' },
+            { id: 12, text: "Saya lebih suka diam dan mengamati daripada banyak bicara.", dimension: 'extraversion', reverse: true },
+            { id: 13, text: "Saya peduli dan turut sedih jika teman saya sedang kesusahan.", dimension: 'agreeableness' },
+            { id: 14, text: "Saya sering mengalah demi menghindari konflik dengan teman.", dimension: 'agreeableness' },
+            { id: 15, text: "Saya percaya bahwa pada dasarnya semua orang itu baik.", dimension: 'agreeableness' },
+            { id: 16, text: "Saya kadang bersikap kasar atau dingin pada orang lain jika sedang kesal.", dimension: 'agreeableness', reverse: true },
+            { id: 17, text: "Saya sering merasa cemas akan hal-hal yang belum terjadi.", dimension: 'neuroticism' },
+            { id: 18, text: "Suasana hati (mood) saya bisa berubah drastis dalam waktu singkat.", dimension: 'neuroticism' },
+            { id: 19, text: "Saya mudah merasa tersinggung oleh komentar orang lain.", dimension: 'neuroticism' },
+            { id: 20, text: "Saya tetap tenang meskipun menghadapi situasi yang menekan.", dimension: 'neuroticism', reverse: true },
+            { id: 21, text: "Saya suka merakit komputer, robot, atau memperbaiki barang elektronik.", dimension: 'realistic' },
+            { id: 22, text: "Saya lebih suka pelajaran olahraga atau praktik lapangan dibanding teori di kelas.", dimension: 'realistic' },
+            { id: 23, text: "Saya tertarik bekerja dengan alat-alat berat atau mesin industri.", dimension: 'realistic' },
+            { id: 24, text: "Saya suka kegiatan berkemah, mendaki, atau bercocok tanam.", dimension: 'realistic' },
+            { id: 25, text: "Saya suka membaca artikel tentang penemuan sains atau teknologi terbaru.", dimension: 'investigative' },
+            { id: 26, text: "Saya suka memecahkan teka-teki logika atau soal matematika yang sulit.", dimension: 'investigative' },
+            { id: 27, text: "Saya ingin meneliti penyebab terjadinya suatu penyakit atau fenomena alam.", dimension: 'investigative' },
+            { id: 28, text: "Saya cenderung menganalisis masalah sebelum bertindak.", dimension: 'investigative' },
+            { id: 29, text: "Saya bisa mengekspresikan perasaan melalui gambar, musik, atau tulisan.", dimension: 'artistic' },
+            { id: 30, text: "Saya suka mendesain poster, baju, atau tampilan presentasi agar menarik.", dimension: 'artistic' },
+            { id: 31, text: "Saya tidak suka aturan yang terlalu kaku dan membatasi ide saya.", dimension: 'artistic' },
+            { id: 32, text: "Saya menikmati pertunjukan drama, pameran seni, atau konser musik.", dimension: 'artistic' },
+            { id: 33, text: "Saya merasa senang jika bisa mengajari teman yang belum paham pelajaran.", dimension: 'social' },
+            { id: 34, text: "Teman-teman sering curhat masalah pribadi kepada saya.", dimension: 'social' },
+            { id: 35, text: "Saya tertarik dengan kegiatan sukarelawan atau bakti sosial.", dimension: 'social' },
+            { id: 36, text: "Saya lebih suka bekerja dalam kelompok daripada sendirian.", dimension: 'social' },
+            { id: 37, text: "Saya berani mencalonkan diri menjadi ketua kelas atau ketua OSIS.", dimension: 'enterprising' },
+            { id: 38, text: "Saya suka meyakinkan orang lain agar setuju dengan pendapat saya.", dimension: 'enterprising' },
+            { id: 39, text: "Saya tertarik belajar tentang cara memulai bisnis atau jual-beli online.", dimension: 'enterprising' },
+            { id: 40, text: "Saya berani mengambil risiko untuk mendapatkan hasil yang besar.", dimension: 'enterprising' },
+            { id: 41, text: "Saya suka mencatat pengeluaran uang saku saya secara rinci.", dimension: 'conventional' },
+            { id: 42, text: "Saya merasa nyaman jika jadwal harian saya sudah tersusun rapi.", dimension: 'conventional' },
+            { id: 43, text: "Saya teliti dalam memeriksa kesalahan penulisan (typo) atau hitungan angka.", dimension: 'conventional' },
+            { id: 44, text: "Saya lebih suka pekerjaan yang memiliki instruksi dan prosedur jelas.", dimension: 'conventional' },
+            { id: 45, text: "Saya lebih mudah ingat materi jika ada gambar, grafik, atau peta konsep.", dimension: 'visual' },
+            { id: 46, text: "Saya suka menandai buku pelajaran dengan stabilo warna-warni.", dimension: 'visual' },
+            { id: 47, text: "Saya lebih suka membaca sendiri daripada dibacakan orang lain.", dimension: 'visual' },
+            { id: 48, text: "Jika tersesat, saya lebih suka melihat peta (Google Maps) daripada bertanya orang.", dimension: 'visual' },
+            { id: 49, text: "Saya lebih paham jika guru menjelaskan dengan lisan (ceramah).", dimension: 'auditory' },
+            { id: 50, text: "Saya suka membaca dengan suara keras atau menggerakkan bibir saat belajar.", dimension: 'auditory' },
+            { id: 51, text: "Saya mudah terganggu oleh suara berisik saat sedang konsentrasi.", dimension: 'auditory' },
+            { id: 52, text: "Saya lebih suka diskusi kelompok atau tanya jawab lisan.", dimension: 'auditory' },
+            { id: 53, text: "Saya tidak betah duduk diam mendengarkan ceramah lebih dari 30 menit.", dimension: 'kinesthetic' },
+            { id: 54, text: "Saya sering mengetuk-ngetuk pena atau menggoyangkan kaki saat berpikir.", dimension: 'kinesthetic' },
+            { id: 55, text: "Saya lebih paham jika langsung praktik (laboratorium/bengkel) daripada teori.", dimension: 'kinesthetic' },
+            { id: 56, text: "Saya suka belajar sambil berjalan-jalan atau memegang benda.", dimension: 'kinesthetic' },
+            { id: 57, text: "Saya tidak pernah sekalipun berbohong seumur hidup saya.", dimension: 'lie' },
+            { id: 58, text: "Saya menyukai setiap orang yang pernah saya temui.", dimension: 'lie' },
+            { id: 59, text: "Saya tidak pernah marah, bahkan saat diperlakukan tidak adil.", dimension: 'lie' },
+            { id: 60, text: "Saya selalu mematuhi semua peraturan tanpa terkecuali, kapanpun dan dimanapun.", dimension: 'lie' },
+        ];
+
+        let studentData = { nama: '', kelas: '', nis: '', gender: '' };
+        let answers = {};
+        let currentQuestionIndex = 0;
+        let finalResults = null;
+
+        // UI Helpers
+        function switchView(viewId) {
+            document.querySelectorAll('.app-view').forEach(el => { el.classList.add('hidden-view'); el.classList.remove('fade-in'); });
+            const target = document.getElementById(viewId);
+            if (target) { target.classList.remove('hidden-view'); void target.offsetWidth; target.classList.add('fade-in'); }
+            lucide.createIcons();
+            window.scrollTo(0,0);
+        }
+
+        // Chart Builder
+        function createBar(label, percent, colorClass, icon) {
+            return `
+            <div class="chart-row">
+                <div class="chart-label flex items-center">
+                    ${icon ? `<span class="chart-icon">${icon}</span>` : ''}
+                    <span class="truncate">${label}</span>
+                </div>
+                <div class="chart-track">
+                    <div class="chart-fill ${colorClass}" style="width: ${percent}%"></div>
+                </div>
+                <div class="chart-value">${percent}%</div>
+            </div>`;
+        }
+
+        // Logic
+        function startTest() {
+            const nama = document.getElementById('input-nama').value;
+            const gender = document.getElementById('input-gender').value;
+            const kelas = document.getElementById('input-kelas').value;
+            const nis = document.getElementById('input-nis').value;
+            if (!nama || !kelas || !gender) { alert("Mohon lengkapi Data Diri."); return; }
+            studentData = { nama, gender, kelas, nis };
+            switchView('view-test');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestionIndex];
+            const progress = Math.round(((currentQuestionIndex + 1) / questions.length) * 100);
+            
+            if(document.getElementById('test-progress-text')) document.getElementById('test-progress-text').innerText = `${currentQuestionIndex + 1} / ${questions.length}`;
+            if(document.getElementById('test-progress-bar')) document.getElementById('test-progress-bar').style.width = `${progress}%`;
+            if(document.getElementById('question-text')) document.getElementById('question-text').innerText = `"${q.text}"`;
+            
+            let sec = "Bagian 1: Karakter";
+            if(q.id > 20 && q.id <= 44) sec = "Bagian 2: Minat";
+            if(q.id > 44 && q.id <= 56) sec = "Bagian 3: Gaya Belajar";
+            if(q.id > 56) sec = "Bagian 4: Validitas";
+            if(document.getElementById('test-section-title')) document.getElementById('test-section-title').innerText = sec;
+        }
+
+        function handleAnswer(score) {
+            answers[questions[currentQuestionIndex].id] = score;
+            if (currentQuestionIndex < questions.length - 1) { currentQuestionIndex++; renderQuestion(); }
+            else { finishTest(); }
+        }
+
+        function finishTest() {
+            calculateResults();
+            renderDashboard();
+            renderPrintReport();
+            switchView('view-dashboard');
+        }
+
+        function calculateResults() {
+            const scores = { openness: 0, conscientiousness: 0, extraversion: 0, agreeableness: 0, neuroticism: 0, realistic: 0, investigative: 0, artistic: 0, social: 0, enterprising: 0, conventional: 0, visual: 0, auditory: 0, kinesthetic: 0, lie: 0 };
+            
+            questions.forEach(q => {
+                let s = answers[q.id] || 3;
+                if (q.reverse) s = 6 - s;
+                scores[q.dimension] += s;
+            });
+
+            // Normalisasi Score (Max 20)
+            const norm = (val) => Math.round((val / 20) * 100);
+            
+            // Add Icons directly to stats
+            const stats = {
+                char: [
+                    { l: 'Openness', v: norm(scores.openness), i: '🎨' },
+                    { l: 'Conscientious', v: norm(scores.conscientiousness), i: '📋' },
+                    { l: 'Extraversion', v: norm(scores.extraversion), i: '🗣️' },
+                    { l: 'Agreeableness', v: norm(scores.agreeableness), i: '🤝' },
+                    { l: 'Neuroticism', v: norm(scores.neuroticism), i: '🌪️' }
+                ],
+                vak: [
+                    { l: 'Visual', v: norm(scores.visual), i: '👁️' },
+                    { l: 'Auditory', v: norm(scores.auditory), i: '👂' },
+                    { l: 'Kinesthetic', v: norm(scores.kinesthetic), i: '🏃' }
+                ],
+                riasec: [
+                    { l: 'Realistic', v: norm(scores.realistic), c: 'R', i: '🔧' },
+                    { l: 'Investigative', v: norm(scores.investigative), c: 'I', i: '🔬' },
+                    { l: 'Artistic', v: norm(scores.artistic), c: 'A', i: '🎭' },
+                    { l: 'Social', v: norm(scores.social), c: 'S', i: '👥' },
+                    { l: 'Enterprising', v: norm(scores.enterprising), c: 'E', i: '📈' },
+                    { l: 'Conventional', v: norm(scores.conventional), c: 'C', i: '🗂️' }
+                ]
+            };
+
+            // Logic Dominan
+            let highTraits = stats.char.filter(t => t.v >= 70).map(t => t.l);
+            if(highTraits.length === 0) highTraits = ["Seimbang"];
+            
+            // Sort VAK
+            stats.vak.sort((a,b) => b.v - a.v);
+            const domVak = stats.vak[0].l; 
+
+            // Sort RIASEC
+            stats.riasec.sort((a,b) => b.v - a.v);
+            const top2Code = stats.riasec[0].c + stats.riasec[1].c;
+
+            // Generate Detailed Descriptions (>30 words each)
+            let charDesc = `Berdasarkan hasil asesmen, profil kepribadian Anda menunjukkan dominasi pada sifat ${highTraits.join(" dan ")}. `;
+            if(scores.openness > 14) charDesc += "Anda adalah individu yang sangat terbuka terhadap ide-ide baru, kreatif, dan memiliki rasa ingin tahu intelektual yang tinggi. ";
+            if(scores.conscientiousness > 14) charDesc += "Tingkat ketekunan Anda yang tinggi menandakan bahwa Anda sangat terorganisir, disiplin, dan selalu berorientasi pada pencapaian target. ";
+            if(scores.extraversion > 14) charDesc += "Energi sosial Anda yang besar membuat Anda mudah bergaul, asertif, dan sering menjadi pusat perhatian dalam kelompok. ";
+            if(scores.agreeableness > 14) charDesc += "Sifat kooperatif dan empati Anda membuat Anda sangat disukai teman-teman dan dapat diandalkan dalam kerja tim. ";
+            if(scores.neuroticism > 14) charDesc += "Terkadang Anda mungkin merasa cemas atau bereaksi emosional terhadap tekanan, sehingga teknik relaksasi akan sangat membantu. ";
+            else charDesc += "Kestabilan emosi Anda sangat baik, memungkinkan Anda tetap tenang dan logis bahkan dalam situasi yang penuh tekanan. ";
+
+            let learnDesc = "";
+            if (domVak === 'Visual') {
+                learnDesc = "Gaya belajar dominan Anda adalah Visual. Otak Anda memproses informasi paling efektif melalui indra penglihatan. Anda cenderung lebih mudah memahami materi yang disajikan dalam bentuk grafik, diagram, peta konsep, atau video. Untuk hasil terbaik, gunakanlah stabilo warna-warni saat mencatat, buatlah mind-mapping untuk merangkum pelajaran, dan cobalah memvisualisasikan materi dalam benak Anda.";
+            } else if (domVak === 'Auditory') {
+                learnDesc = "Gaya belajar dominan Anda adalah Auditori. Anda memiliki kepekaan tinggi terhadap suara dan penjelasan lisan. Diskusi kelompok, mendengarkan ceramah guru, atau merekam materi pelajaran untuk didengarkan kembali adalah metode yang sangat efektif bagi Anda. Membaca dengan suara keras atau menjelaskan materi kepada orang lain juga akan membantu memperkuat ingatan Anda.";
+            } else {
+                learnDesc = "Gaya belajar dominan Anda adalah Kinestetik. Anda belajar paling baik dengan melibatkan gerakan fisik dan pengalaman langsung. Duduk diam terlalu lama mungkin membosankan bagi Anda. Cobalah belajar sambil berjalan-jalan, lakukan simulasi atau praktik langsung, dan gunakan objek nyata sebagai alat bantu belajar. Aktivitas fisik sebelum belajar juga dapat meningkatkan konsentrasi Anda.";
+            }
+
+            let suggest = "";
+            if (scores.lie > 15) {
+                suggest = "Hasil menunjukkan adanya kecenderungan untuk memberikan jawaban yang 'ideal' daripada yang sebenarnya. Langkah pertama pengembangan diri adalah kejujuran pada diri sendiri. Terimalah kelebihan dan kekurangan Anda sebagai bagian utuh dari diri Anda untuk pertumbuhan yang nyata.";
+            } else {
+                suggest = `Untuk mengembangkan potensi diri, fokuslah pada kekuatan utama Anda yaitu ${highTraits[0]}. Tantang diri Anda dengan mengambil tanggung jawab lebih dalam organisasi atau proyek sekolah. `;
+                if(scores.conscientiousness < 12) suggest += "Mengingat skor ketekunan yang perlu ditingkatkan, mulailah membiasakan diri membuat jadwal harian dan memecah tugas besar menjadi langkah-langkah kecil yang mudah dikelola. Disiplin adalah kunci kesuksesan jangka panjang. ";
+                if(scores.neuroticism > 14) suggest += "Latihlah manajemen stres melalui teknik pernapasan atau mindfulness agar kecemasan tidak menghambat performa Anda. Percayalah pada kemampuan diri sendiri. ";
+                suggest += "Ingatlah bahwa kecerdasan bukan hanya nilai akademis, tetapi juga kemampuan memahami diri sendiri dan beradaptasi.";
+            }
+
+            const interpretation = {
+                characterDesc: charDesc,
+                strengths: highTraits.slice(0,2),
+                learningDesc: learnDesc,
+                extraKurikuler: domVak === 'Visual' ? "Desain Grafis, Jurnalistik" : domVak === 'Auditory' ? "Debat, Paduan Suara" : "Olahraga, KIR",
+                careerMajors: top2Code.includes('I') ? "Teknik, Sains, Kedokteran" : top2Code.includes('S') ? "Pendidikan, Hukum" : "Ekonomi, Bisnis",
+                careerJobs: top2Code.includes('E') ? "Manajer, Wirausaha" : top2Code.includes('C') ? "Akuntan, Data Analyst" : "Peneliti, Insinyur",
+                selfDevSuggestion: suggest
+            };
+
+            finalResults = { scores, stats, interpretation, domVak, top2Code };
+        }
+
+        function renderDashboard() {
+            const res = finalResults;
+            const today = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            if(document.getElementById('dash-nama')) document.getElementById('dash-nama').innerText = studentData.nama;
+            if(document.getElementById('dash-kelas')) document.getElementById('dash-kelas').innerText = studentData.kelas;
+            if(document.getElementById('dash-tanggal')) document.getElementById('dash-tanggal').innerText = `Tanggal Tes: ${today}`;
+            if(document.getElementById('dash-trait-title')) document.getElementById('dash-trait-title').innerText = res.interpretation.strengths.join(", ");
+            if(document.getElementById('dash-vak-title')) document.getElementById('dash-vak-title').innerText = res.domVak;
+            if(document.getElementById('dash-code-title')) document.getElementById('dash-code-title').innerText = res.top2Code;
+        }
+
+        function renderPrintReport() {
+            const res = finalResults;
+            const today = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Data
+            if(document.getElementById('print-nama')) document.getElementById('print-nama').innerText = studentData.nama;
+            if(document.getElementById('print-kelas')) document.getElementById('print-kelas').innerText = studentData.kelas;
+            if(document.getElementById('print-nis')) document.getElementById('print-nis').innerText = studentData.nis;
+            if(document.getElementById('print-gender')) document.getElementById('print-gender').innerText = studentData.gender;
+            
+            // Render Charts (With Colors & Icons)
+            const renderCharts = (data, id, colorClass) => {
+                const el = document.getElementById(id);
+                if(el) el.innerHTML = data.map(d => createBar(d.l, d.v, colorClass, d.i)).join('');
+            };
+            
+            // 1. Karakter (Blue Gradient)
+            renderCharts(res.stats.char.slice(0,4), 'chart-character', 'fill-blue');
+            
+            // 2. VAK (Teal Gradient)
+            renderCharts(res.stats.vak, 'chart-vak', 'fill-teal');
+            
+            // 3. RIASEC (Indigo Gradient) - Top 4 only to save space
+            renderCharts(res.stats.riasec.slice(0,4), 'chart-riasec', 'fill-indigo');
+
+            // Text Data - safe assignment
+            if(document.getElementById('print-trait-title')) document.getElementById('print-trait-title').innerText = res.interpretation.strengths.join(", ");
+            if(document.getElementById('print-character-desc')) document.getElementById('print-character-desc').innerText = res.interpretation.characterDesc;
+            
+            if(document.getElementById('print-vak-type')) document.getElementById('print-vak-type').innerText = res.domVak;
+            if(document.getElementById('print-vak-desc')) document.getElementById('print-vak-desc').innerText = res.interpretation.learningDesc;
+            if(document.getElementById('print-extra')) document.getElementById('print-extra').innerText = res.interpretation.extraKurikuler;
+
+            if(document.getElementById('print-holland')) document.getElementById('print-holland').innerText = res.top2Code;
+            if(document.getElementById('print-majors')) document.getElementById('print-majors').innerText = res.interpretation.careerMajors;
+            if(document.getElementById('print-jobs')) document.getElementById('print-jobs').innerText = res.interpretation.careerJobs;
+
+            if(document.getElementById('print-suggestion')) document.getElementById('print-suggestion').innerText = res.interpretation.selfDevSuggestion;
+            if(document.getElementById('print-date')) document.getElementById('print-date').innerText = today;
+            if(document.getElementById('print-guru-nama')) document.getElementById('print-guru-nama').innerText = studentData.gender === "Putra" ? "( Ramdlani In'am Arzaqi, S.Pd. )" : "( Ela Yuni Istikhomah, S.Psi. )";
+            
+            lucide.createIcons();
+        }
+
+        window.onload = function() { lucide.createIcons(); };
+    </script>
+</body>
+</html>
